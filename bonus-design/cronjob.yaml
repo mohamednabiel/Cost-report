@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cost_report_tool
+spec:
+  schedule: "0 17 ? * 1-5 *"
+  JobTemplate:
+    spec:
+      template:
+        spec:
+          #serviceAccountName: irsa-service-account
+          containers:
+            —name: cost_report
+            image: mohamednabiel717/cost_api:0.0.1
+            imagePullPolicy: IfNotPresent
+            command:
+            - python
+            - main.py
+          restartPolicy: OnFailure

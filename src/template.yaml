@@ -1,0 +1,50 @@
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  Function: 
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: COST_REPORT
+      Handler: main.lambda_handler
+      Runtime: python3.9
+      Timeout: 30
+      Architectures:
+        - arm64
+      Events:
+        ScheduledEvent:
+          Type: Schedule
+          Properties:
+            Name: SCHEDULE_NAME_HERE
+            Schedule: cron(0 17 ? * MON-FRI *)
+            
+      Policies:
+      - Statement:
+        - Sid: SNSAccess
+          Effect: Allow
+          Action:
+          - sns:Publish
+          - sns:Subscribe
+          - sns:GetTopicAttributes
+          - sns:SetTopicAttributes
+          - sns:TagResource
+          - sns:UntagResource
+          - sns:ListTagsForResource
+          - sns:ListSubscriptionsByTopic
+          Resource: 'arn:aws:sns:us-east-1:755352676598:test-topic'
+        - Sid: EC2DescribeAccess
+          Effect: Allow
+          Action:
+          - ec2:Describe*
+          Resource: '*'
+        - Sid: RDSDescribeAccess
+          Effect: Allow
+          Action:
+          - rds:Describe*
+          Resource: '*'
+        - Sid: PricingApiAccess
+          Effect: Allow
+          Action:
+          - pricing:DescribeServices
+          - pricing:GetAttributeValues
+          - pricing:GetProducts
+          Resource: '*'
